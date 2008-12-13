@@ -5,7 +5,7 @@ Plugin URI: http://www.semiologic.com/software/widgets/widget-contexts/
 Description: Lets you manage whether widgets should show display or not based on the context.
 Author: Denis de Bernardy
 Version: 1.0.1
-Author URI: http://www.semiologic.com
+Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: widget_contexts
 Update Package: http://www.semiologic.com/media/software/widgets/widget-contexts/widget-contexts.zip
