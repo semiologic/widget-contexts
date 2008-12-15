@@ -6,7 +6,7 @@ Description: Lets you manage whether widgets should show display or not based on
 Author: Denis de Bernardy
 Version: 1.0.1
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: widget_contexts
 Update Package: http://www.semiologic.com/media/software/widgets/widget-contexts/widget-contexts.zip
 */
