@@ -4,7 +4,7 @@ Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widgets/widget-contexts/
 Description: Lets you manage whether widgets should show display or not based on the context.
 Author: Denis de Bernardy
-Version: 1.0.1
+Version: 1.0.2 alpha
 Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/plugins
 Update Tag: widget_contexts
@@ -32,8 +32,34 @@ class widget_contexts
 		if ( !is_admin() )
 		{
 			add_action('init', array('widget_contexts', 'widgetize'), 100);
+			add_filter('page_class', array('widget_contexts', 'page_class'));
 		}
 	} # init()
+	
+	
+	#
+	# page_class()
+	#
+	
+	function page_class($classes)
+	{
+		if ( is_page() )
+		{
+			$post = get_post($GLOBALS['wp_query']->get_queried_object_id());
+
+			while ( $post->post_parent != 0 )
+			{
+				$post = get_post($post->post_parent);
+			}
+			
+			$class = $post->post_name;
+			$class = preg_replace("/[^a-z]/", '_', $class);
+			
+			$classes[] = $class;
+		}
+		
+		return $classes;
+	} # page_class()
 	
 	
 	#
