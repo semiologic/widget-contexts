@@ -9,21 +9,7 @@ class widget_contexts_admin
 	function init()
 	{
 		add_action('init', array('widget_contexts_admin', 'widgetize'), 100);
-
-		add_filter('sem_api_key_protected', array('widget_contexts_admin', 'sem_api_key_protected'));
 	} # init()
-
-
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/widgets/widget-contexts/widget-contexts.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
 	
 	
 	#
