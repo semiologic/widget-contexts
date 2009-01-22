@@ -6,7 +6,7 @@ Description: Lets you manage whether widgets should show display or not based on
 Version: 1.0.3 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Update Package: https://members.semiologic.com/media/plugins/widget-contexts.zip
+Update Package: https://members.semiologic.com/media/plugins/widget-contexts/widget-contexts.zip
 */
 
 /*
