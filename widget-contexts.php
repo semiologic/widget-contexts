@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Widget Contexts
-Plugin URI: http://www.semiologic.com/software/widgets/widget-contexts/
+Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
 Version: 1.0.4 RC
 Author: Denis de Bernardy
