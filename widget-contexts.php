@@ -112,6 +112,11 @@ class widget_contexts
 			if ( is_front_page() )
 			{
 				$context = 'home';
+				
+				# override for sales letter
+				if ( is_page() && get_post_meta($GLOBALS['wp_query']->get_queried_object_id(), '_wp_page_template', true) == 'letter.php' ) {
+					$context = 'template_letter.php';
+				}
 			}
 			elseif ( is_home() )
 			{
