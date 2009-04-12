@@ -29,16 +29,16 @@ class widget_contexts
 		if ( !is_admin() )
 		{
 			add_action('init', array('widget_contexts', 'widgetize'), 100);
-			add_filter('page_class', array('widget_contexts', 'page_class'));
+			add_filter('body_class', array('widget_contexts', 'body_class'));
 		}
 	} # init()
 	
 	
 	#
-	# page_class()
+	# body_class()
 	#
 	
-	function page_class($classes)
+	function body_class($classes)
 	{
 		if ( is_page() )
 		{
@@ -56,7 +56,7 @@ class widget_contexts
 		}
 		
 		return $classes;
-	} # page_class()
+	} # body_class()
 	
 	
 	#
