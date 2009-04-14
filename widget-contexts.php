@@ -28,7 +28,7 @@ class widget_contexts
 	{
 		if ( !is_admin() )
 		{
-			add_action('init', array('widget_contexts', 'widgetize'), 100);
+			add_action('init', array('widget_contexts', 'widgetize'), 1000);
 			add_filter('body_class', array('widget_contexts', 'body_class'));
 		}
 	} # init()

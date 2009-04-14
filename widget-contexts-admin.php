@@ -8,7 +8,7 @@ class widget_contexts_admin
 	
 	function init()
 	{
-		add_action('init', array('widget_contexts_admin', 'widgetize'), 100);
+		add_action('init', array('widget_contexts_admin', 'widgetize'), 1000);
 	} # init()
 	
 	
@@ -24,6 +24,7 @@ class widget_contexts_admin
 		
 		global $wp_registered_widgets;
 		global $wp_registered_widget_controls;
+		global $wp_registered_widget_updates;
 		global $widget_contexts_controls;
 		
 		foreach ( array_keys((array) $wp_registered_widgets) as $widget_id )
@@ -49,6 +50,7 @@ class widget_contexts_admin
 				'return widget_contexts_admin::control(\'' . $widget_id . '\', $widget_args);'
 				);
 			$wp_registered_widget_controls[$widget_id]['width'] += 220;
+			$wp_registered_widget_updates[$widget_id]['callback'] = $wp_registered_widget_controls[$widget_id]['callback'];
 		}
 	} # widgetize()
 	
