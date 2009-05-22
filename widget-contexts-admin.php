@@ -237,7 +237,7 @@ class widget_contexts_admin
 			global $wp_registered_sidebars;
 			if ( isset($_GET['sidebar']) && isset($wp_registered_sidebars[$_GET['sidebar']]) )
 			{
-				$sidebar = attribute_escape($_GET['sidebar']);
+				$sidebar = esc_attr($_GET['sidebar']);
 			} elseif ( is_array($wp_registered_sidebars) && $wp_registered_sidebars )
 			{
 				$sidebar = array_shift($keys = array_keys($wp_registered_sidebars));
