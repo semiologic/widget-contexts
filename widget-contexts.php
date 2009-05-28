@@ -44,7 +44,7 @@ class widget_contexts
 	{
 		if ( is_page() )
 		{
-			$post = get_post($GLOBALS['wp_query']->get_queried_object_id());
+			$post = get_post($GLOBALS['wp_the_query']->get_queried_object_id());
 
 			while ( $post->post_parent != 0 )
 			{
@@ -116,7 +116,7 @@ class widget_contexts
 				$context = 'home';
 				
 				# override for sales letter
-				if ( is_page() && get_post_meta($GLOBALS['wp_query']->get_queried_object_id(), '_wp_page_template', true) == 'letter.php' ) {
+				if ( is_page() && get_post_meta($GLOBALS['wp_the_query']->get_queried_object_id(), '_wp_page_template', true) == 'letter.php' ) {
 					$context = 'template_letter.php';
 				}
 			}
@@ -132,12 +132,12 @@ class widget_contexts
 			{
 				$is_page = true;
 				
-				$template = get_post_meta($GLOBALS['wp_query']->get_queried_object_id(), '_wp_page_template', true);
+				$template = get_post_meta($GLOBALS['wp_the_query']->get_queried_object_id(), '_wp_page_template', true);
 				
 				switch ( $template )
 				{
 				case 'default':
-					$post = get_post($GLOBALS['wp_query']->get_queried_object_id());
+					$post = get_post($GLOBALS['wp_the_query']->get_queried_object_id());
 					
 					while ( $post->post_parent != 0 )
 					{
