@@ -1,0 +1,62 @@
+.widget_contexts_float {
+	width: 32%;
+	float: left;
+	margin-right: 5px;
+}
+
+.widget_contexts-no_entry_specials #the_entry .widget_contexts_float {
+	width: 49%;
+}
+
+.widget_contexts ul {
+	margin-top: 9px;
+	margin-bottom: 0px;
+}
+
+.widget_contexts li {
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
+
+#top_sidebar .widget_context-template_monocolumn,
+#top-sidebar .widget_context-template_monocolumn,
+#bottom_sidebar .widget_context-template_monocolumn,
+#bottom-sidebar .widget_context-template_monocolumn,
+#ext_sidebar .widget_context-template_monocolumn,
+#ext-sidebar .widget_context-template_monocolumn,
+#left_sidebar .widget_context-template_monocolumn,
+#left-sidebar .widget_context-template_monocolumn,
+#right_sidebar .widget_context-template_monocolumn,
+#right-sidebar .widget_context-template_monocolumn,
+#sidebar-1 .widget_context-template_monocolumn,
+#sidebar-2 .widget_context-template_monocolumn {
+	display: none;
+}
+
+.widget_context-template_letter {
+	display: none;
+}
+
+#the_entry .widget_context-template_letter,
+#before_the_entries .widget_context-template_letter,
+#after_the_entries .widget_context-template_letter {
+	display: block;
+}
+
+#the_entry .widget_context-error_404 {
+	display: none;
+}
+
+.widget_contexts-no_templates .widget_contexts-templates {
+	display: none;
+}
+
+.widget_contexts-search_reloaded #the_entry .widget_contexts-special {
+	display: none;
+}
+
+#the_404 .widget_contexts,
+#inline_widgets .widget_contexts,
+#feed_widgets .widget_contexts {
+	display: none;
+}
