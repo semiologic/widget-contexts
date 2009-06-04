@@ -35,7 +35,7 @@ add_action('admin_print_styles-widgets.php', array('widget_contexts', 'admin_pri
 add_action('save_post', array('widget_contexts', 'save_post'));
 add_filter('body_class', array('widget_contexts', 'body_class'));
 
-add_action('register_widget', array('widget_contexts', 'register_widget'), 20);
+#add_action('register_widget', array('widget_contexts', 'register_widget'), 20);
 add_filter('widget_display_callback', array('widget_contexts', 'display'), 0, 3);
 add_filter('widget_update_callback', array('widget_contexts', 'update'), 30, 4);
 add_action('in_widget_form', array('widget_contexts', 'form'), 30, 3);
@@ -65,6 +65,18 @@ class widget_contexts {
 		wp_enqueue_style('widget-contexts', $folder . '/admin.css', null, '20090603');
 		
 		add_filter('admin_body_class', array('widget_contexts', 'admin_body_class'));
+		
+		global $wp_registered_widget_controls;
+		foreach ( array_keys($wp_registered_widget_controls) as $widget_id ) {
+			if ( !is_array($wp_registered_widget_controls[$widget_id]['callback']) )
+				continue;
+			if ( !is_a($wp_registered_widget_controls[$widget_id]['callback'][0], 'WP_Widget') )
+				continue;
+			if ( $wp_registered_widget_controls[$widget_id]['width'] >= 460 )
+				continue;
+			$wp_registered_widget_controls[$widget_id]['width'] = 460;
+			$wp_registered_widget_controls[$widget_id]['callback'][0]->control_options['width'] = 460;
+		}
 	} # admin_print_styles()
 	
 	
@@ -170,24 +182,6 @@ class widget_contexts {
 	
 	
 	/**
-	 * register_widget()
-	 *
-	 * @param object &$widget WP_Widget
-	 * @return void
-	 **/
-
-	function register_widget(&$widget) {
-		if ( !is_admin() )
-			return;
-		
-		$min_width = 600;
-		if ( !isset($widget->control_options['width'])
-			|| isset($widget->control_options['width']) && $widget->control_options['width'] < $min_width )
-			$widget->control_options['width'] = $min_width;
-	} # register_widget()
-	
-	
-	/**
 	 * display()
 	 *
 	 * @param array $instance
@@ -286,7 +280,6 @@ class widget_contexts {
 	 **/
 
 	function form(&$widget, &$return, $instance) {
-		$return = null;
 		$all_contexts = widget_contexts::get_contexts();
 		
 		$contexts = is_array($instance['widget_contexts']) ? $instance['widget_contexts'] : array();

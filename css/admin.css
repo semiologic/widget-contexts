@@ -60,3 +60,13 @@
 #feed_widgets .widget_contexts {
 	display: none;
 }
+
+.widget-control-noform {
+	display: block;
+}
+
+#the_404 .widget-control-noform,
+#inline_widgets .widget-control-noform,
+#feed_widgets .widget-control-noform {
+	display: none;
+}
