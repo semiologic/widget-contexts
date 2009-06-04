@@ -91,7 +91,7 @@ class widget_contexts {
 		$contexts = widget_contexts::get_contexts();
 		
 		if ( class_exists('search_reloaded') && !$contexts['templates'] )
-			$classes .= 'widget_contexts-no_entry_specials';
+			$classes .= ' widget_contexts-no_entry_specials';
 		
 		if ( class_exists('search_reloaded') )
 			$classes .= ' widget_contexts-search_reloaded';
