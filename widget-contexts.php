@@ -35,7 +35,6 @@ add_action('admin_print_styles-widgets.php', array('widget_contexts', 'admin_pri
 add_action('save_post', array('widget_contexts', 'save_post'));
 add_filter('body_class', array('widget_contexts', 'body_class'));
 
-#add_action('register_widget', array('widget_contexts', 'register_widget'), 20);
 add_filter('widget_display_callback', array('widget_contexts', 'display'), 0, 3);
 add_filter('widget_update_callback', array('widget_contexts', 'update'), 30, 4);
 add_action('in_widget_form', array('widget_contexts', 'form'), 30, 3);
