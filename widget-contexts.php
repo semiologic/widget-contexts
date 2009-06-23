@@ -6,7 +6,7 @@ Description: Lets you manage whether widgets should display or not based on the 
 Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: widget-contexts-info
+Text Domain: widget-contexts
 Domain Path: /lang
 */
 
@@ -282,7 +282,16 @@ class widget_contexts {
 		$all_contexts = widget_contexts::get_contexts();
 		
 		$contexts = is_array($instance['widget_contexts']) ? $instance['widget_contexts'] : array();
-		$contexts = wp_parse_args($contexts, array('page' => true));
+		if ( method_exists($widget, 'defaults') ) {
+			$defaults = $widget->defaults();
+			$defaults = is_array($defaults) && isset($defaults['widget_contexts'])
+				? $defaults['widget_contexts']
+				: array('page' => true);
+		} else {
+			$defaults = array('page' => true);
+		}
+		
+		$contexts = wp_parse_args($contexts, $defaults);
 		
 		echo '<div class="widget_contexts">' . "\n"
 			. '<div class="widget_contexts_float">' . "\n";
@@ -527,6 +536,8 @@ class widget_contexts {
 			$context = 'category';
 		} elseif ( is_tag() ) {
 			$context = 'tag';
+		} elseif ( is_author() ) {
+			$context = 'author';
 		} elseif ( is_search() ) {
 			$context = 'search';
 		} elseif ( is_404() ) {
