@@ -39,6 +39,9 @@ add_filter('widget_display_callback', array('widget_contexts', 'display'), 0, 3)
 add_filter('widget_update_callback', array('widget_contexts', 'update'), 30, 4);
 add_action('in_widget_form', array('widget_contexts', 'form'), 30, 3);
 
+if ( get_option('widget_contexts_version') === false )
+	add_action('init', array('widget_contexts', 'upgrade'));
+
 class widget_contexts {
 	/**
 	 * admin_print_scripts()
@@ -622,5 +625,75 @@ class widget_contexts {
 		
 		return $contexts;
 	} # get_contexts()
+	
+	
+	/**
+	 * upgrade()
+	 *
+	 * @return void
+	 **/
+
+	function upgrade() {
+		$widget_contexts = get_option('widget_contexts');
+		
+		if ( !is_array($widget_contexts) ) {
+			update_option('widget_contexts_version', 2);
+			return;
+		}
+		
+		global $wp_registered_widgets;
+		
+		foreach ( $widget_contexts as $widget => $contexts ) {
+			if ( $widget == 'democracy' ) {
+				$num = false;
+				$id_base = 'democracy';
+				$widget_id = "$id_base-2";
+				$option_name = 'widget_democracy';
+			} elseif ( preg_match("/^link_widget-(\d+)$/", $widget, $match) ) {
+				$num = array_pop($match);
+				$id_base = 'links';
+				$widget_id = "$id_base-$num";
+				$option_name = 'widget_links';
+			} elseif ( preg_match("/^(.+)-(\d+)$/", $widget, $match) ) {
+				$num = array_pop($match);
+				$id_base = array_pop($match);
+				$widget_id = "$id_base-$num";
+				$option_name = 'widget_' . preg_replace("/-d+$/", '', $widget);
+			} else {
+				continue;
+			}
+			
+			if ( !isset($wp_registered_widgets[$widget_id]) )
+				continue;
+			if ( !is_array($wp_registered_widgets[$widget_id]['callback']) )
+				continue;
+			if ( !is_a($wp_registered_widgets[$widget_id]['callback'][0], 'WP_Widget') )
+				continue;
+			
+			$option = get_option($option_name);
+			
+			if ( !is_array($option) )
+				continue;
+			
+			if ( $num ) {
+				if ( isset($option[$num]['widget_contexts']) )
+					continue;
+				$option[$num]['widget_contexts'] = $contexts;
+				unset($widget_contexts[$widget]);
+			} else {
+				if ( isset($option['widget_contexts']) )
+					continue;
+				$option['widget_contexts'] = $contexts;
+				unset($widget_contexts[$widget]);
+			}
+
+			update_option($option_name, $option);
+		}
+		
+		if ( is_admin() ) {
+			delete_option('widget_contexts');
+			update_option('widget_contexts_version', 2);
+		}
+	} # upgrade()
 } # widget_contexts
 ?>
