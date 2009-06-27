@@ -692,7 +692,7 @@ class widget_contexts {
 		
 		if ( is_admin() ) {
 			delete_option('widget_contexts');
-			update_option('widget_contexts_version', 2);
+			update_option('widget_contexts_version', '2.0');
 		}
 	} # upgrade()
 } # widget_contexts
