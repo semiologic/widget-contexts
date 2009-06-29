@@ -636,8 +636,8 @@ class widget_contexts {
 	function upgrade() {
 		$widget_contexts = get_option('widget_contexts');
 		
-		if ( !is_array($widget_contexts) ) {
-			update_option('widget_contexts_version', 2);
+		if ( $widget_contexts === false ) {
+			update_option('widget_contexts_version', '2.0');
 			return;
 		}
 		
@@ -658,7 +658,7 @@ class widget_contexts {
 				$num = array_pop($match);
 				$id_base = array_pop($match);
 				$widget_id = "$id_base-$num";
-				$option_name = 'widget_' . preg_replace("/-d+$/", '', $widget);
+				$option_name = 'widget_' . $id_base;
 			} else {
 				continue;
 			}
@@ -681,19 +681,23 @@ class widget_contexts {
 				$option[$num]['widget_contexts'] = $contexts;
 				unset($widget_contexts[$widget]);
 			} else {
-				if ( isset($option['widget_contexts']) )
-					continue;
-				$option['widget_contexts'] = $contexts;
+				if ( isset($option[2]) ) {
+					if ( isset($option[2]['widget_contexts']) )
+						continue;
+					$option[2]['widget_contexts'] = $contexts;
+				} else {
+					if ( isset($option['widget_contexts']) )
+						continue;
+					$option['widget_contexts'] = $contexts;
+				}
+				
 				unset($widget_contexts[$widget]);
 			}
 
 			update_option($option_name, $option);
 		}
 		
-		if ( is_admin() ) {
-			delete_option('widget_contexts');
-			update_option('widget_contexts_version', '2.0');
-		}
+		update_option('widget_contexts_version', '2.0');
 	} # upgrade()
 } # widget_contexts
 ?>
