@@ -644,23 +644,27 @@ class widget_contexts {
 		global $wp_registered_widgets;
 		
 		foreach ( $widget_contexts as $widget => $contexts ) {
-			if ( $widget == 'democracy' ) {
-				$num = false;
-				$id_base = 'democracy';
-				$widget_id = "$id_base-2";
-				$option_name = 'widget_democracy';
-			} elseif ( preg_match("/^link_widget-(\d+)$/", $widget, $match) ) {
-				$num = array_pop($match);
-				$id_base = 'links';
-				$widget_id = "$id_base-$num";
-				$option_name = 'widget_links';
-			} elseif ( preg_match("/^(.+)-(\d+)$/", $widget, $match) ) {
+			if ( preg_match("/^(.+)-(\d+)$/", $widget, $match) ) {
 				$num = array_pop($match);
 				$id_base = array_pop($match);
+				switch ( $id_base ) {
+				case 'link_widget':
+					$id_base = 'links';
+					break;
+				case 'archive_widget':
+					$id_base = 'archives';
+					break;
+				case 'tag_cloud_widget':
+					$id_base = 'tag_cloud';
+					break;
+				}
 				$widget_id = "$id_base-$num";
 				$option_name = 'widget_' . $id_base;
 			} else {
-				continue;
+				$num = false;
+				$id_base = $widget;
+				$widget_id = "$id_base-2";
+				$option_name = 'widget_' . $widget;
 			}
 			
 			if ( !isset($wp_registered_widgets[$widget_id]) )
