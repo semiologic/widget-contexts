@@ -39,7 +39,7 @@ add_filter('widget_display_callback', array('widget_contexts', 'display'), 0, 3)
 add_filter('widget_update_callback', array('widget_contexts', 'update'), 30, 4);
 add_action('in_widget_form', array('widget_contexts', 'form'), 30, 3);
 
-if ( get_option('widget_contexts_version') === false )
+if ( get_option('widget_contexts_version') === false && !defined('DOING_CRON') )
 	add_action('init', array('widget_contexts', 'upgrade'));
 
 class widget_contexts {
@@ -198,6 +198,21 @@ class widget_contexts {
 		
 		$context = widget_contexts::get_context();
 		
+		$instance['widget_contexts'] = is_array($instance['widget_contexts'])
+			? $instance['widget_contexts']
+			: array();
+		
+		if ( method_exists($widget, 'defaults') ) {
+			$defaults = $widget->defaults();
+			$defaults = is_array($defaults) && isset($defaults['widget_contexts'])
+				? $defaults['widget_contexts']
+				: array('page' => true);
+		} else {
+			$defaults = array('page' => true);
+		}
+
+		$instance['widget_contexts'] = wp_parse_args($instance['widget_contexts'], $defaults);
+
 		if ( isset($instance['widget_contexts'][$context]) )
 			$active = $instance['widget_contexts'][$context];
 		elseif ( !is_page() )
@@ -284,7 +299,10 @@ class widget_contexts {
 	function form(&$widget, &$return, $instance) {
 		$all_contexts = widget_contexts::get_contexts();
 		
-		$contexts = is_array($instance['widget_contexts']) ? $instance['widget_contexts'] : array();
+		$contexts = is_array($instance['widget_contexts'])
+			? $instance['widget_contexts']
+			: array();
+		
 		if ( method_exists($widget, 'defaults') ) {
 			$defaults = $widget->defaults();
 			$defaults = is_array($defaults) && isset($defaults['widget_contexts'])
@@ -636,7 +654,7 @@ class widget_contexts {
 	function upgrade() {
 		$widget_contexts = get_option('widget_contexts');
 		
-		if ( $widget_contexts === false ) {
+		if ( !$widget_contexts ) {
 			update_option('widget_contexts_version', '2.0');
 			return;
 		}
@@ -663,8 +681,14 @@ class widget_contexts {
 			} else {
 				$num = false;
 				$id_base = $widget;
+				switch ( $id_base ) {
+				case 'nextprev_posts':
+				case 'next_prev_posts':
+					$id_base = 'blog_footer';
+					break;
+				}
 				$widget_id = "$id_base-2";
-				$option_name = 'widget_' . $widget;
+				$option_name = 'widget_' . $id_base;
 			}
 			
 			if ( !isset($wp_registered_widgets[$widget_id]) )
@@ -676,27 +700,31 @@ class widget_contexts {
 			
 			$option = get_option($option_name);
 			
-			if ( !is_array($option) )
+			if ( $option === false && $num === false ) {
+				if ( !empty($wp_registered_widgets[$widget_id]['callback'][0]->alt_option_name) ) {
+					$option_name = $wp_registered_widgets[$widget_id]['callback'][0]->alt_option_name;
+					$option = get_option($option_name);
+				} else {
+					$option[$num] = array();
+				}
+			} elseif ( !is_array($option) ) {
 				continue;
+			}
 			
-			if ( $num ) {
+			if ( $num === false )
+				$num = 2;
+			
+			if ( isset($option[$num]) ) {
 				if ( isset($option[$num]['widget_contexts']) )
 					continue;
 				$option[$num]['widget_contexts'] = $contexts;
-				unset($widget_contexts[$widget]);
 			} else {
-				if ( isset($option[2]) ) {
-					if ( isset($option[2]['widget_contexts']) )
-						continue;
-					$option[2]['widget_contexts'] = $contexts;
-				} else {
-					if ( isset($option['widget_contexts']) )
-						continue;
-					$option['widget_contexts'] = $contexts;
-				}
-				
-				unset($widget_contexts[$widget]);
+				if ( isset($option['widget_contexts']) )
+					continue;
+				$option['widget_contexts'] = $contexts;
 			}
+			
+			unset($widget_contexts[$widget]);
 
 			update_option($option_name, $option);
 		}
