@@ -20,7 +20,7 @@ http://www.mesoconcepts.com/license/
 **/
 
 
-load_plugin_textdomain('widget-contexts', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('widget-contexts', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -606,8 +606,8 @@ class widget_contexts {
 			");
 		
 		if ( get_option('show_on_front') == 'page' ) {
-			$home_page_id = get_option('page_on_front');
-			$blog_page_id = get_option('page_for_posts');
+			$home_page_id = (int) get_option('page_on_front');
+			$blog_page_id = (int) get_option('page_for_posts');
 			$ignore = array($home_page_id, $blog_page_id);
 		} else {
 			$ignore = array();
