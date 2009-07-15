@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.0 RC
+Version: 2.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -32,7 +32,7 @@ load_plugin_textdomain('widget-contexts', false, dirname(plugin_basename(__FILE_
 add_action('admin_print_scripts-widgets.php', array('widget_contexts', 'admin_print_scripts'));
 add_action('admin_print_styles-widgets.php', array('widget_contexts', 'admin_print_styles'));
 
-add_action('save_post', array('widget_contexts', 'save_post'));
+add_action('save_post', array('widget_contexts', 'save_entry'));
 add_filter('body_class', array('widget_contexts', 'body_class'));
 
 add_filter('widget_display_callback', array('widget_contexts', 'display'), 0, 3);
@@ -106,20 +106,20 @@ class widget_contexts {
 	
 	
 	/**
-	 * save_post()
+	 * save_entry()
 	 *
 	 * @param int $post_id
 	 * @return void
 	 **/
 
-	function save_post($post_id) {
+	function save_entry($post_id) {
 		$post = get_post($post_id);
 		
 		if ( $post->post_type != 'page' )
 			return;
 		
 		delete_transient('cached_section_ids');
-	} # save_post()
+	} # save_entry()
 	
 	
 	/**
