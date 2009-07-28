@@ -177,7 +177,7 @@ class widget_contexts {
 		$section_id = get_post_meta($wp_the_query->get_queried_object_id(), '_section_id', true);
 		$section = get_post($section_id);
 		
-		$classes[] = sanitize_html_class('section-' . $section->post_name, 'section-' . $section_id);
+		$classes[] = 'section-' . sanitize_html_class($section->post_name, $section_id);
 		
 		return $classes;
 	} # body_class()
