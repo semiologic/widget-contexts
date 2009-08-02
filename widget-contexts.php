@@ -29,19 +29,6 @@ load_plugin_textdomain('widget-contexts', false, dirname(plugin_basename(__FILE_
  * @package Widget Contexts
  **/
 
-add_action('admin_print_scripts-widgets.php', array('widget_contexts', 'admin_print_scripts'));
-add_action('admin_print_styles-widgets.php', array('widget_contexts', 'admin_print_styles'));
-
-add_action('save_post', array('widget_contexts', 'save_entry'));
-add_filter('body_class', array('widget_contexts', 'body_class'));
-
-add_filter('widget_display_callback', array('widget_contexts', 'display'), 0, 3);
-add_filter('widget_update_callback', array('widget_contexts', 'update'), 30, 4);
-add_action('in_widget_form', array('widget_contexts', 'form'), 30, 3);
-
-if ( get_option('widget_contexts_version') === false && !defined('DOING_CRON') )
-	add_action('init', array('widget_contexts', 'upgrade'));
-
 class widget_contexts {
 	/**
 	 * admin_print_scripts()
@@ -732,4 +719,17 @@ class widget_contexts {
 		update_option('widget_contexts_version', '2.0');
 	} # upgrade()
 } # widget_contexts
+
+add_action('admin_print_scripts-widgets.php', array('widget_contexts', 'admin_print_scripts'));
+add_action('admin_print_styles-widgets.php', array('widget_contexts', 'admin_print_styles'));
+
+add_action('save_post', array('widget_contexts', 'save_entry'));
+add_filter('body_class', array('widget_contexts', 'body_class'));
+
+add_filter('widget_display_callback', array('widget_contexts', 'display'), 0, 3);
+add_filter('widget_update_callback', array('widget_contexts', 'update'), 30, 4);
+add_action('in_widget_form', array('widget_contexts', 'form'), 30, 3);
+
+if ( get_option('widget_contexts_version') === false && !defined('DOING_CRON') )
+	add_action('init', array('widget_contexts', 'upgrade'));
 ?>
