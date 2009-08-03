@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-15 18:41+0200\n"
+"POT-Creation-Date: 2009-08-03 18:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: widget-contexts-info.php:2 widget-contexts.php:334
+#: widget-contexts-info.php:2 widget-contexts.php:321
 msgid "Widget Contexts"
 msgstr ""
 
@@ -25,58 +25,58 @@ msgid ""
 "Lets you manage whether widgets should display or not based on the context."
 msgstr ""
 
-#: widget-contexts.php:374
+#: widget-contexts.php:361
 msgid "Page Sections"
 msgstr ""
 
-#: widget-contexts.php:403
+#: widget-contexts.php:390
 msgid "New Section"
 msgstr ""
 
-#: widget-contexts.php:432
+#: widget-contexts.php:419
 msgid "Page Templates"
 msgstr ""
 
-#: widget-contexts.php:474
+#: widget-contexts.php:461
 msgid "Special Contexts"
 msgstr ""
 
-#: widget-contexts.php:624
+#: widget-contexts.php:611
 msgid "Front Page"
 msgstr ""
 
-#: widget-contexts.php:625
+#: widget-contexts.php:612
 msgid "Blog on a Static Page"
 msgstr ""
 
-#: widget-contexts.php:626
+#: widget-contexts.php:613
 msgid "Post"
 msgstr ""
 
-#: widget-contexts.php:627
+#: widget-contexts.php:614
 msgid "Attachment"
 msgstr ""
 
-#: widget-contexts.php:628
+#: widget-contexts.php:615
 msgid "Category Archives"
 msgstr ""
 
-#: widget-contexts.php:629
+#: widget-contexts.php:616
 msgid "Tag Archives"
 msgstr ""
 
-#: widget-contexts.php:630
+#: widget-contexts.php:617
 msgid "Author Archives"
 msgstr ""
 
-#: widget-contexts.php:631
+#: widget-contexts.php:618
 msgid "Date Archives"
 msgstr ""
 
-#: widget-contexts.php:634
+#: widget-contexts.php:621
 msgid "Search Results"
 msgstr ""
 
-#: widget-contexts.php:635
+#: widget-contexts.php:622
 msgid "Not Found Error (404)"
 msgstr ""
