@@ -39,7 +39,7 @@ class widget_contexts {
 	function admin_print_scripts() {
 		$folder = plugin_dir_url(__FILE__) . 'js';
 		wp_enqueue_script('jquery-livequery', $folder . '/jquery.livequery.js', array('jquery'),  '1.1', true);
-		wp_enqueue_script( 'widget-contexts', $folder . '/admin.js', array('jquery-ui-sortable', 'jquery-livequery'),  '20090603', true);
+		wp_enqueue_script( 'widget-contexts', $folder . '/admin.js', array('jquery-ui-sortable', 'jquery-livequery'),  '20090808', true);
 	} # admin_print_scripts()
 	
 	
@@ -315,7 +315,7 @@ class widget_contexts {
 		echo '<h3>'
 			. '<label>'
 			. '<span class="hide-if-no-js">'
-			. '<input type="checkbox" class="check_toggle">'
+			. '<input type="checkbox" class="widget_context_toggle">'
 			. '&nbsp;'
 			. '</span>'
 			. __('Widget Contexts', 'widget-contexts')
@@ -355,7 +355,7 @@ class widget_contexts {
 		echo '<h4>'
 			. '<label>'
 			. '<span class="hide-if-no-js">'
-			. '<input type="checkbox" class="check_toggle">'
+			. '<input type="checkbox" class="widget_context_toggle">'
 			. '&nbsp;'
 			. '</span>'
 			. __('Page Sections', 'widget-contexts')
@@ -413,7 +413,7 @@ class widget_contexts {
 		echo '<h4>'
 			. '<label>'
 			. '<span class="hide-if-no-js">'
-			. '<input type="checkbox" class="check_toggle">'
+			. '<input type="checkbox" class="widget_context_toggle">'
 			. '&nbsp;'
 			. '</span>'
 			. __('Page Templates', 'widget-contexts')
@@ -455,7 +455,7 @@ class widget_contexts {
 		echo '<h4>'
 			. '<label>'
 			. '<span class="hide-if-no-js">'
-			. '<input type="checkbox" class="check_toggle">'
+			. '<input type="checkbox" class="widget_context_toggle">'
 			. '&nbsp;'
 			. '</span>'
 			. __('Special Contexts', 'widget-contexts')
