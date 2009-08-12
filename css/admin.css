@@ -1,3 +1,7 @@
+#widget_contexts {
+	display: none;
+}
+
 .widget_contexts_float {
 	width: 32%;
 	float: left;

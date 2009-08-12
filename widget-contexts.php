@@ -38,8 +38,7 @@ class widget_contexts {
 
 	function admin_print_scripts() {
 		$folder = plugin_dir_url(__FILE__) . 'js';
-		wp_enqueue_script('jquery-livequery', $folder . '/jquery.livequery.js', array('jquery'),  '1.1', true);
-		wp_enqueue_script( 'widget-contexts', $folder . '/admin.js', array('jquery-ui-sortable', 'jquery-livequery'),  '20090808', true);
+		wp_enqueue_script('widget-contexts', $folder . '/admin.js', array('jquery'),  '20090810', true);
 	} # admin_print_scripts()
 	
 	
@@ -51,7 +50,7 @@ class widget_contexts {
 
 	function admin_print_styles() {
 		$folder = plugin_dir_url(__FILE__) . 'css';
-		wp_enqueue_style('widget-contexts', $folder . '/admin.css', null, '20090603');
+		wp_enqueue_style('widget-contexts', $folder . '/admin.css', null, '20090803');
 		
 		add_filter('admin_body_class', array('widget_contexts', 'admin_body_class'));
 		
@@ -66,6 +65,8 @@ class widget_contexts {
 			$wp_registered_widget_controls[$widget_id]['width'] = 460;
 			$wp_registered_widget_controls[$widget_id]['callback'][0]->control_options['width'] = 460;
 		}
+		
+		add_action('admin_footer', array('widget_contexts', 'picker'));
 	} # admin_print_styles()
 	
 	
@@ -232,6 +233,11 @@ class widget_contexts {
 			return $instance;
 		}
 		
+		if ( !isset($new_instance['widget_contexts']) ) {
+			$instance['widget_contexts'] = array();
+			return $instance;
+		}
+		
 		$all_contexts = widget_contexts::get_contexts();
 		
 		foreach ( $all_contexts as $contexts )
@@ -290,32 +296,102 @@ class widget_contexts {
 			? $instance['widget_contexts']
 			: array();
 		
+		$base = array('page' => true);
+		
 		if ( method_exists($widget, 'defaults') ) {
 			$defaults = $widget->defaults();
 			$defaults = is_array($defaults) && isset($defaults['widget_contexts'])
-				? $defaults['widget_contexts']
-				: array('page' => true);
+				? wp_parse_args($defaults['widget_contexts'], $base)
+				: $base;
 		} else {
-			$defaults = array('page' => true);
+			$defaults = $base;
 		}
 		
 		$contexts = wp_parse_args($contexts, $defaults);
 		
-		echo '<div class="widget_contexts">' . "\n"
+		foreach ( array_keys($all_contexts['normal']) as $context ) {
+			if ( !isset($defaults[$context]) )
+				$defaults[$context] = true;
+		}
+		
+		foreach ( array_keys($all_contexts['sections']) as $context ) {
+			if ( !isset($defaults[$context]) )
+				$defaults[$context] = $defaults['page'];
+		}
+		
+		foreach ( array_keys($all_contexts['templates']) as $context ) {
+			if ( !isset($defaults[$context]) ) {
+				if ( $context == 'template_letter' )
+					$defaults[$context] = (bool) preg_match("/^entry_(?:content|comments)/", $widget->id_base);
+				else
+					$defaults[$context] = $defaults['page'];
+			}
+		}
+		
+		foreach ( array_keys($all_contexts['special']) as $context ) {
+			if ( !isset($defaults[$context]) )
+				$defaults[$context] = true;
+		}
+		
+		$diff = array_diff_assoc($contexts, $defaults);
+		
+		foreach ( array_keys($diff) as $context ) {
+			if ( !isset($defaults[$context]) )
+				unset($diff[$context]);
+		}
+		
+		if ( !$diff ) {
+			$strip = array_keys(array_diff($defaults, array(true)));
+			
+			echo '<div class="widget_contexts">' . "\n";
+			
+			echo '<input type="hidden" class="widget_contexts_base" disabled="disabled"'
+				. ' value="' . $widget->get_field_name('widget_contexts') . '"'
+				. ' />' . "\n";
+			
+			echo '<input type="hidden" class="widget_contexts_strip" disabled="disabled"'
+				. ' value="' . esc_attr(join(',', $strip)) . '"'
+				. ' />' . "\n";
+			
+			echo '<h3>'
+				. __('Widget Contexts', 'widget-reloaded')
+				. '</h3>' . "\n";
+			
+			echo '<p>'
+				. sprintf(__('Widget Contexts allows to override when a widget displays what it should based on the type of page that is visited. <a href="%s">Learn More</a>. <a href="#" class="widget_contexts_setup">Customize</a>.', 'widget-contexts'), 'http://www.semiologic.com/software/widget-contexts/')
+				. '</p>' . "\n";
+			
+			echo '</div>' . "\n";
+		} else {
+			$contexts = wp_parse_args($contexts, $defaults);
+			widget_contexts::picker($contexts, $widget->get_field_name('widget_contexts'));
+		}
+	} # form()
+	
+	
+	/**
+	 * picker()
+	 *
+	 * @param array $contexts
+	 * @return void
+	 **/
+
+	function picker($contexts = array(), $basename = '') {
+		$extra = '';
+		$all_contexts = widget_contexts::get_contexts();
+		
+		if ( !$contexts )
+			$extra = ' id="widget_contexts"';
+		
+		echo '<div class="widget_contexts"' . $extra . '>' . "\n"
 			. '<div class="widget_contexts_float">' . "\n";
 		
-		
 		echo '<div>' . "\n";
-		
-		foreach ( $all_contexts['normal'] as $context => $label ) {
-			if ( !isset($contexts[$context]) )
-				$contexts[$context] = true;
-		}
 		
 		echo '<h3>'
 			. '<label>'
 			. '<span class="hide-if-no-js">'
-			. '<input type="checkbox" class="widget_context_toggle">'
+			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
 			. '</span>'
 			. __('Widget Contexts', 'widget-contexts')
@@ -328,8 +404,8 @@ class widget_contexts {
 			echo '<li>'
 				. '<label>'
 				. '<input type="checkbox"'
-					. ' name="' . $widget->get_field_name('widget_contexts') . '[' . $context . ']"'
-					. checked($contexts[$context], true, false)
+					. ' name="' . $basename . '[' . $context . ']"'
+					. checked(!isset($contexts[$context]) || $contexts[$context], true, false)
 					. ' />'
 				. '&nbsp;'
 				. $label
@@ -346,16 +422,11 @@ class widget_contexts {
 		
 		
 		echo '<div>' . "\n";
-		
-		foreach ( $all_contexts['sections'] as $context => $label ) {
-			if ( !isset($contexts[$context]) )
-				$contexts[$context] = $contexts['page'];
-		}
 			
 		echo '<h4>'
 			. '<label>'
 			. '<span class="hide-if-no-js">'
-			. '<input type="checkbox" class="widget_context_toggle">'
+			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
 			. '</span>'
 			. __('Page Sections', 'widget-contexts')
@@ -368,8 +439,8 @@ class widget_contexts {
 			echo '<li>'
 				. '<label>'
 				. '<input type="checkbox"'
-					. ' name="' . $widget->get_field_name('widget_contexts') . '[' . $context . ']"'
-					. checked($contexts[$context], true, false)
+					. ' name="' . $basename . '[' . $context . ']"'
+					. checked(!isset($contexts[$context]) || $contexts[$context], true, false)
 					. ' />'
 				. '&nbsp;'
 				. $label
@@ -383,8 +454,8 @@ class widget_contexts {
 		echo '<li>'
 			. '<label>'
 			. '<input type="checkbox"'
-				. ' name="' . $widget->get_field_name('widget_contexts') . '[page]"'
-				. checked($contexts['page'], true, false)
+				. ' name="' . $basename . '[page]"'
+				. checked(!isset($contexts[$context]) || $contexts['page'], true, false)
 				. ' />'
 			. '&nbsp;'
 			. __('New Section', 'widget-contexts')
@@ -401,19 +472,10 @@ class widget_contexts {
 		
 		echo '<div class="widget_contexts-templates">' . "\n";
 		
-		foreach ( $all_contexts['templates'] as $context => $label ) {
-			if ( !isset($contexts[$context]) ) {
-				if ( $context == 'template_letter' )
-					$contexts[$context] = preg_match("/^entry_(?:content|comments)/", $widget->id_base);
-				else
-					$contexts[$context] = $contexts['page'];
-			}
-		}
-		
 		echo '<h4>'
 			. '<label>'
 			. '<span class="hide-if-no-js">'
-			. '<input type="checkbox" class="widget_context_toggle">'
+			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
 			. '</span>'
 			. __('Page Templates', 'widget-contexts')
@@ -431,8 +493,8 @@ class widget_contexts {
 				. '>'
 				. '<label>'
 				. '<input type="checkbox"'
-					. ' name="' . $widget->get_field_name('widget_contexts') . '[' . $context . ']"'
-					. checked($contexts[$context], true, false)
+					. ' name="' . $basename . '[' . $context . ']"'
+					. checked(!isset($contexts[$context]) || $contexts[$context], true, false)
 					. ' />'
 				. '&nbsp;'
 				. $label
@@ -447,15 +509,10 @@ class widget_contexts {
 			. '<div class="widget_contexts-special">' . "\n";
 		
 		
-		foreach ( $all_contexts['special'] as $context => $label ) {
-			if ( !isset($contexts[$context]) )
-				$contexts[$context] = true;
-		}
-		
 		echo '<h4>'
 			. '<label>'
 			. '<span class="hide-if-no-js">'
-			. '<input type="checkbox" class="widget_context_toggle">'
+			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
 			. '</span>'
 			. __('Special Contexts', 'widget-contexts')
@@ -473,8 +530,8 @@ class widget_contexts {
 				. '>'
 				. '<label>'
 				. '<input type="checkbox"'
-					. ' name="' . $widget->get_field_name('widget_contexts') . '[' . $context . ']"'
-					. checked($contexts[$context], true, false)
+					. ' name="' . $basename . '[' . $context . ']"'
+					. checked(!isset($contexts[$context]) || $contexts[$context], true, false)
 					. ' />'
 				. '&nbsp;'
 				. $label
@@ -490,7 +547,7 @@ class widget_contexts {
 		echo '</div>' . "\n"
 			. '<div style="clear: both;"></div>' . "\n"
 			. '</div>' . "\n";
-	} # form()
+	} # picker()
 	
 	
 	/**
