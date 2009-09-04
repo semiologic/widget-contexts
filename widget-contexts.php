@@ -38,7 +38,7 @@ class widget_contexts {
 
 	function admin_print_scripts() {
 		$folder = plugin_dir_url(__FILE__) . 'js';
-		wp_enqueue_script('widget-contexts', $folder . '/admin.js', array('jquery'),  '20090810', true);
+		wp_enqueue_script('widget-contexts', $folder . '/admin.js', array('jquery'),  '20090903', true);
 	} # admin_print_scripts()
 	
 	
@@ -50,7 +50,7 @@ class widget_contexts {
 
 	function admin_print_styles() {
 		$folder = plugin_dir_url(__FILE__) . 'css';
-		wp_enqueue_style('widget-contexts', $folder . '/admin.css', null, '20090803');
+		wp_enqueue_style('widget-contexts', $folder . '/admin.css', null, '20090903');
 		
 		add_filter('admin_body_class', array('widget_contexts', 'admin_body_class'));
 		
