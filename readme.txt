@@ -35,4 +35,4 @@ Alternatively, email sales at semiologic dot com.
 - Complete Rewrite
 - Localization
 - Code enhancements and optimizations
-- Add an SEO crash-course
+- Use WP_Widgets
