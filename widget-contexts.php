@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.0 RC3
+Version: 2.0
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -343,7 +343,7 @@ class widget_contexts {
 		if ( !$diff ) {
 			$strip = array_keys(array_diff($defaults, array(true)));
 			
-			echo '<div class="widget_contexts">' . "\n";
+			echo '<div class="widget_contexts hide-if-no-js">' . "\n";
 			
 			echo '<input type="hidden" class="widget_contexts_base" disabled="disabled"'
 				. ' value="' . $widget->get_field_name('widget_contexts') . '"'
@@ -358,7 +358,7 @@ class widget_contexts {
 				. '</h3>' . "\n";
 			
 			echo '<p>'
-				. sprintf(__('Widget Contexts allows to override when a widget displays what it should based on the type of page that is visited. <a href="%s">Learn More</a>. <a href="#" class="widget_contexts_setup">Customize</a>.', 'widget-contexts'), 'http://www.semiologic.com/software/widget-contexts/')
+				. sprintf(__('Widget Contexts allows to override when a widget displays what it should, based on the type of page that is visited. <a href="%s">Learn More</a>. <a href="#" class="widget_contexts_setup">Customize</a>.', 'widget-contexts'), 'http://www.semiologic.com/software/widget-contexts/')
 				. '</p>' . "\n";
 			
 			echo '</div>' . "\n";
@@ -390,10 +390,8 @@ class widget_contexts {
 		
 		echo '<h3>'
 			. '<label>'
-			. '<span class="hide-if-no-js">'
 			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
-			. '</span>'
 			. __('Widget Contexts', 'widget-contexts')
 			. '</label>'
 			. '</h3>' . "\n";
@@ -425,10 +423,8 @@ class widget_contexts {
 			
 		echo '<h4>'
 			. '<label>'
-			. '<span class="hide-if-no-js">'
 			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
-			. '</span>'
 			. __('Page Sections', 'widget-contexts')
 			. '</label>'
 			. '</h4>' . "\n";
@@ -474,10 +470,8 @@ class widget_contexts {
 		
 		echo '<h4>'
 			. '<label>'
-			. '<span class="hide-if-no-js">'
 			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
-			. '</span>'
 			. __('Page Templates', 'widget-contexts')
 			. '</label>'
 			. '</h4>' . "\n";
@@ -511,10 +505,8 @@ class widget_contexts {
 		
 		echo '<h4>'
 			. '<label>'
-			. '<span class="hide-if-no-js">'
 			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
-			. '</span>'
 			. __('Special Contexts', 'widget-contexts')
 			. '</label>'
 			. '</h4>' . "\n";
