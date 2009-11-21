@@ -30,6 +30,10 @@ Alternatively, email sales at semiologic dot com.
 
 == Change Log ==
 
+= 2.0.1 =
+
+- WP 2.9 compat
+
 = 2.0 =
 
 - Complete Rewrite

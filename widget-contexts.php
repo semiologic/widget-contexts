@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.0
+Version: 2.0.1 beta
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -123,6 +123,7 @@ class widget_contexts {
 			SELECT	*
 			FROM	$wpdb->posts
 			WHERE	post_type = 'page'
+			AND		post_status <> 'trash'
 			");
 		
 		update_post_cache($pages);
@@ -638,6 +639,7 @@ class widget_contexts {
 			FROM	$wpdb->posts
 			WHERE	post_type = 'page'
 			AND		post_parent = 0
+			AND		post_status <> 'trash'
 			ORDER BY menu_order, post_title
 			");
 		
