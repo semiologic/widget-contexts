@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 2.0\n"
+"Project-Id-Version: 2.0.2\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-10-02 11:45+0200\n"
+"POT-Creation-Date: 2009-12-12 19:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: widget-contexts-info.php:2 widget-contexts.php:357 widget-contexts.php:395
+#: widget-contexts-info.php:2 widget-contexts.php:394 widget-contexts.php:432
 msgid "Widget Contexts"
 msgstr ""
 
@@ -25,7 +25,7 @@ msgid ""
 "Lets you manage whether widgets should display or not based on the context."
 msgstr ""
 
-#: widget-contexts.php:361
+#: widget-contexts.php:398
 #, php-format
 msgid ""
 "Widget Contexts allows to override when a widget displays what it should, "
@@ -33,58 +33,58 @@ msgid ""
 "href=\"#\" class=\"widget_contexts_setup\">Customize</a>."
 msgstr ""
 
-#: widget-contexts.php:428
+#: widget-contexts.php:465
 msgid "Page Sections"
 msgstr ""
 
-#: widget-contexts.php:457
+#: widget-contexts.php:494
 msgid "New Section"
 msgstr ""
 
-#: widget-contexts.php:475
+#: widget-contexts.php:512
 msgid "Page Templates"
 msgstr ""
 
-#: widget-contexts.php:510
+#: widget-contexts.php:547
 msgid "Special Contexts"
 msgstr ""
 
-#: widget-contexts.php:660
+#: widget-contexts.php:698
 msgid "Front Page"
 msgstr ""
 
-#: widget-contexts.php:661
+#: widget-contexts.php:699
 msgid "Blog on a Static Page"
 msgstr ""
 
-#: widget-contexts.php:662
+#: widget-contexts.php:700
 msgid "Post"
 msgstr ""
 
-#: widget-contexts.php:663
+#: widget-contexts.php:701
 msgid "Attachment"
 msgstr ""
 
-#: widget-contexts.php:664
+#: widget-contexts.php:702
 msgid "Category Archives"
 msgstr ""
 
-#: widget-contexts.php:665
+#: widget-contexts.php:703
 msgid "Tag Archives"
 msgstr ""
 
-#: widget-contexts.php:666
+#: widget-contexts.php:704
 msgid "Author Archives"
 msgstr ""
 
-#: widget-contexts.php:667
+#: widget-contexts.php:705
 msgid "Date Archives"
 msgstr ""
 
-#: widget-contexts.php:670
+#: widget-contexts.php:708
 msgid "Search Results"
 msgstr ""
 
-#: widget-contexts.php:671
+#: widget-contexts.php:709
 msgid "Not Found Error (404)"
 msgstr ""

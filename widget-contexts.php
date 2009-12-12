@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.0.1
+Version: 2.0.2 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -101,12 +101,48 @@ class widget_contexts {
 	 **/
 
 	function save_entry($post_id) {
+		if ( !get_transient('cached_section_ids') )
+			return;
+		
+		$post_id = (int) $post_id;
 		$post = get_post($post_id);
 		
 		if ( $post->post_type != 'page' )
 			return;
 		
-		delete_transient('cached_section_ids');
+		$section_id = get_post_meta($post_id, '_section_id', true);
+		$refresh = false;
+		if ( !$section_id ) {
+			$refresh = true;
+		} else {
+			_get_post_ancestors($post);
+			if ( !$post->ancestors ) {
+				if ( $section_id != $post_id )
+					$refresh = true;
+			} elseif ( $section_id != $post->ancestors[0] ) {
+				$refresh = true;
+			}
+		}
+		
+		if ( $refresh ) {
+			global $wpdb;
+			if ( !$post->post_parent )
+				$new_section_id = $post_id;
+			else
+				$new_section_id = get_post_meta($post->post_parent, '_section_id', true);
+			
+			if ( $new_section_id ) {
+				update_post_meta($post_id, '_section_id', $new_section_id);
+				wp_cache_delete($post_id, 'posts');
+				
+				# mass-process children
+				if ( $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_parent = $post_id AND post_type = 'page' LIMIT 1") )
+					delete_transient('cached_section_ids');
+			} else {
+				# fix corrupt data
+				delete_transient('cached_section_ids');
+			}
+		}
 	} # save_entry()
 	
 	
@@ -136,7 +172,7 @@ class widget_contexts {
 		
 		foreach ( $pages as $page ) {
 			$parent = $page;
-			while ( $parent->post_parent )
+			while ( $parent->post_parent && $parent->ID != $parent->post_parent )
 				$parent = get_post($parent->post_parent);
 			
 			if ( "$parent->ID" !== get_post_meta($page->ID, '_section_id', true) )

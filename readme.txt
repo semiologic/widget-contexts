@@ -30,6 +30,10 @@ Alternatively, email sales at semiologic dot com.
 
 == Change Log ==
 
+= 2.0.2 =
+
+- Cache improvements
+
 = 2.0.1 =
 
 - WP 2.9 compat
