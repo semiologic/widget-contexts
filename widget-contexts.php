@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.0.2 alpha
+Version: 2.0.2 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
