@@ -218,12 +218,19 @@ class widget_contexts {
 	 **/
 
 	function display($instance, $widget, $args) {
-		if ( $instance === false || in_array($args['id'], array('inline_widgets', 'feed_widgets', 'the_404')) )
+		if ( $instance === false )
+			return $instance;
+		
+		if ( !isset($args['id']) && isset($args[0]) )
+			$args = $args[0];
+		
+		if ( in_array($args['id'], array('inline_widgets', 'feed_widgets', 'the_404')) )
 			return $instance;
 		
 		$context = widget_contexts::get_context();
 		
-		$instance['widget_contexts'] = is_array($instance['widget_contexts'])
+		$instance['widget_contexts'] = isset($instance['widget_contexts']) &&
+			is_array($instance['widget_contexts'])
 			? $instance['widget_contexts']
 			: array();
 		
