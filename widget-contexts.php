@@ -329,7 +329,7 @@ class widget_contexts {
 	function form(&$widget, &$return, $instance) {
 		$all_contexts = widget_contexts::get_contexts();
 		
-		$contexts = is_array($instance['widget_contexts'])
+		$contexts = isset($instance['widget_contexts']) && is_array($instance['widget_contexts'])
 			? $instance['widget_contexts']
 			: array();
 		
