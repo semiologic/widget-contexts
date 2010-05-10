@@ -159,7 +159,7 @@ class widget_contexts {
 			SELECT	*
 			FROM	$wpdb->posts
 			WHERE	post_type = 'page'
-			AND		post_status <> 'trash'
+			AND		post_status IN ( 'publish', 'private' )
 			");
 		
 		update_post_cache($pages);
@@ -682,7 +682,7 @@ class widget_contexts {
 			FROM	$wpdb->posts
 			WHERE	post_type = 'page'
 			AND		post_parent = 0
-			AND		post_status <> 'trash'
+			AND		post_status IN ( 'publish', 'private' )
 			ORDER BY menu_order, post_title
 			");
 		
