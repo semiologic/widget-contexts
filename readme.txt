@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
 Requires at least: 2.8
-Tested up to: 2.9.2
+Tested up to: 3.0
 Stable tag: trunk
 
 Allows to turn widgets on and off based on the context.
@@ -29,6 +29,10 @@ Alternatively, email sales at semiologic dot com.
 
 
 == Change Log ==
+
+= 2.0.3 =
+
+- WP 3.0 compat
 
 = 2.0.2 =
 
