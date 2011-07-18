@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.0.3
+Version: 2.0.4
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -227,7 +227,7 @@ class widget_contexts {
 		if ( in_array($args['id'], array('inline_widgets', 'feed_widgets', 'the_404')) )
 			return $instance;
 		
-		$context = widget_contexts::get_context();
+		$contexts = widget_contexts::get_context();
 		
 		$instance['widget_contexts'] = isset($instance['widget_contexts']) &&
 			is_array($instance['widget_contexts'])
@@ -245,15 +245,18 @@ class widget_contexts {
 
 		$instance['widget_contexts'] = wp_parse_args($instance['widget_contexts'], $defaults);
 
-		if ( isset($instance['widget_contexts'][$context]) )
-			$active = $instance['widget_contexts'][$context];
-		elseif ( !is_page() )
-			$active = !isset($instance['widget_contexts'][$context]);
-		elseif ( is_page() && function_exists('is_letter') && is_letter() )
-			$active = preg_match("/^entry_(?:content|comments)/", $args['widget_id']);
-		else
-			$active = !isset($instance['widget_contexts']['page'])
-				|| isset($instance['widget_contexts']['page']) && $instance['widget_contexts']['page'];
+		foreach ($contexts as $context) {
+			if ( isset($instance['widget_contexts'][$context]) ) {
+				$active |= $instance['widget_contexts'][$context];
+			} elseif ( !is_page() ) {
+				$active |= !isset($instance['widget_contexts'][$context]);
+			} elseif ( is_page() && function_exists('is_letter') && is_letter() ) {
+				$active |= preg_match("/^entry_(?:content|comments)/", $args['widget_id']);
+			} else {
+				$active |= !isset($instance['widget_contexts']['page'])
+					|| isset($instance['widget_contexts']['page']) && $instance['widget_contexts']['page'];
+			}
+		}
 		
 		return $active ? $instance : false;
 	} # display()
@@ -589,65 +592,62 @@ class widget_contexts {
 	/**
 	 * get_context()
 	 *
-	 * @return string $context
+	 * @return string $contexts
 	 **/
 
 	function get_context() {
-		static $context;
+		static $contexts;
 		
-		if ( isset($context) )
-			return $context;
+		if ( isset($contexts) )
+			return $contexts;
+		
+		$contexts = array();
 		
 		if ( is_front_page() ) {
-			$context = 'home';
+			$contexts[] = 'home';
 			
 			# override for sales letter
 			if ( is_page() && function_exists('is_letter') && is_letter() )
-				$context = 'template_letter';
+				$contexts[] = 'template_letter';
 		} elseif ( is_home() ) {
-			$context = 'blog';
+			$contexts[] = 'blog';
 		} elseif ( is_single() ) {
-			$context = 'post';
+			$contexts[] = 'post';
 		} elseif ( is_page() ) {
 			global $wp_the_query;
 			$page_id = $wp_the_query->get_queried_object_id();
+			
+			if ( !get_transient('cached_section_ids') )
+				widget_contexts::cache_section_ids();
+			
+			$section_id = get_post_meta($page_id, '_section_id', true);
+			$contexts[] = 'section_' . $section_id;
+			
 			$template = get_post_meta($page_id, '_wp_page_template', true);
 			
-			switch ( $template ) {
-			case 'default':
-				if ( !get_transient('cached_section_ids') )
-					widget_contexts::cache_section_ids();
-				
-				$section_id = get_post_meta($page_id, '_section_id', true);
-				
-				$context = 'section_' . $section_id;
-				break;
-			
-			default:
+			if ($template != 'default') {
 				$template = trim(strip_tags($template));
 				$template = str_replace('.php', '', $template);
 				$template = sanitize_title($template);
-				
-				$context = 'template_' . $template;
-				break;
+				$contexts[] = 'template_' . $template;
 			}
 		} elseif ( is_singular() ) {
-			$context = 'attachment';
+			$contexts[] = 'attachment';
 		} elseif ( is_category() ) {
-			$context = 'category';
+			$contexts[] = 'category';
 		} elseif ( is_tag() ) {
-			$context = 'tag';
+			$contexts[] = 'tag';
 		} elseif ( is_author() ) {
-			$context = 'author';
+			$contexts[] = 'author';
 		} elseif ( is_search() ) {
-			$context = 'search';
+			$contexts[] = 'search';
 		} elseif ( is_404() ) {
-			$context = 'error_404';
+			$contexts[] = 'error_404';
 		} else {
-			$context = 'archive';
+			$contexts[] = 'archive';
 		}
 		
-		return $context;
+		return $contexts;
 	} # get_context()
 	
 	
