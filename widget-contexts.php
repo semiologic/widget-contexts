@@ -3,8 +3,8 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.0.4
-Author: Denis de Bernardy
+Version: 2.1
+Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
 Domain Path: /lang
@@ -115,11 +115,11 @@ class widget_contexts {
 		if ( !$section_id ) {
 			$refresh = true;
 		} else {
-			_get_post_ancestors($post);
-			if ( !$post->ancestors ) {
+            $ancestors = get_post_ancestors($post);
+			if ( empty($ancestors) ) {
 				if ( $section_id != $post_id )
 					$refresh = true;
-			} elseif ( $section_id != $post->ancestors[0] ) {
+			} elseif ( $section_id != $ancestors[count($ancestors)-1] ) {
 				$refresh = true;
 			}
 		}
@@ -245,6 +245,7 @@ class widget_contexts {
 
 		$instance['widget_contexts'] = wp_parse_args($instance['widget_contexts'], $defaults);
 
+        $active = 0;
 		foreach ($contexts as $context) {
 			if ( isset($instance['widget_contexts'][$context]) ) {
 				$active |= $instance['widget_contexts'][$context];
@@ -332,6 +333,7 @@ class widget_contexts {
 	 * form()
 	 *
 	 * @param object &$widget WP_Widget
+     * @param object &$return
 	 * @param array $instance
 	 * @return void
 	 **/
@@ -405,7 +407,8 @@ class widget_contexts {
 				. '</h3>' . "\n";
 			
 			echo '<p>'
-				. sprintf(__('Widget Contexts allows to override when a widget displays what it should, based on the type of page that is visited. <a href="%s">Learn More</a>. <a href="#" class="widget_contexts_setup">Customize</a>.', 'widget-contexts'), 'http://www.semiologic.com/software/widget-contexts/')
+				. sprintf(__('Widget Contexts allows to override when a widget displays what it should, based on the type of page that is visited. <a href="%s">Learn More</a>. <a href="#" class="widget_contexts_setup">Customize</a>.', 'widget-contexts'),
+                    'http://www.semiologic.com/software/widget-contexts/')
 				. '</p>' . "\n";
 			
 			echo '</div>' . "\n";
@@ -420,6 +423,7 @@ class widget_contexts {
 	 * picker()
 	 *
 	 * @param array $contexts
+     * @param string $basename
 	 * @return void
 	 **/
 
@@ -592,7 +596,7 @@ class widget_contexts {
 	/**
 	 * get_context()
 	 *
-	 * @return string $contexts
+	 * @return array $contexts
 	 **/
 
 	function get_context() {
@@ -606,9 +610,9 @@ class widget_contexts {
 		if ( is_front_page() ) {
 			$contexts[] = 'home';
 			
-			# override for sales letter
-			if ( is_page() && function_exists('is_letter') && is_letter() )
-				$contexts[] = 'template_letter';
+        # override for sales letter
+        if ( is_page() && function_exists('is_letter') && is_letter() )
+            $contexts[] = 'template_letter';
 		} elseif ( is_home() ) {
 			$contexts[] = 'blog';
 		} elseif ( is_single() ) {

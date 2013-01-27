@@ -1,9 +1,9 @@
 === Widget Contexts ===
-Contributors: Denis-de-Bernardy
+Contributors: Denis-de-Bernardy & Mike Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
-Requires at least: 2.8
-Tested up to: 3.2.1
+Requires at least: 3.1
+Tested up to: 3.5
 Stable tag: trunk
 
 Allows to turn widgets on and off based on the context.
@@ -27,6 +27,12 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 2.1 =
+
+- WP 3.5 compat
+- Recoded for removed _get_post_ancestors function
+- Fixed section toggles in customize to uncheck all.  Requires use of .prop instead of .attr with jQuery 1.6+
 
 = 2.0.4 =
 

@@ -1,10 +1,10 @@
 
 var widgetContexts = {
 	toggle : function(elt) {
-		var is_checked = jQuery(elt).attr('checked');
+		var is_checked = jQuery(elt).prop('checked');
 		jQuery(elt).closest('div').find(':checkbox').attr('checked', is_checked);
 	}
-}
+};
 
 window.widgetContexts = widgetContexts;
 
