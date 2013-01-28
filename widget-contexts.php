@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.1
+Version: 2.1.1
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -224,7 +224,7 @@ class widget_contexts {
 		if ( !isset($args['id']) && isset($args[0]) )
 			$args = $args[0];
 		
-		if ( in_array($args['id'], array('inline_widgets', 'feed_widgets', 'the_404')) )
+		if ( isset($args['id']) && in_array($args['id'], array('inline_widgets', 'feed_widgets', 'the_404')) )
 			return $instance;
 		
 		$contexts = widget_contexts::get_context();
@@ -277,7 +277,10 @@ class widget_contexts {
 		$sidebar_id = $_POST['sidebar'];
 		
 		if ( in_array($sidebar_id, array('inline_widgets', 'feed_widgets', 'the_404')) ) {
-			$instance['widget_contexts'] = wp_parse_args($old_instance['widget_contexts'], array());
+            if ( !isset($old_instance['widget_contexts'] ))
+          			$instance['widget_contexts'] = array();
+			else
+                $instance['widget_contexts'] = wp_parse_args($old_instance['widget_contexts'], array());
 			return $instance;
 		}
 		

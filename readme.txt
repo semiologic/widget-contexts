@@ -28,6 +28,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 2.1.1 =
+
+- Correct unknown index warnings
+
 = 2.1 =
 
 - WP 3.5 compat
