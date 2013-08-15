@@ -28,6 +28,11 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 2.2 =
+
+- WP 3.6 compat
+- PHP 5.4 compat
+
 = 2.1.2 =
 
 - Fix svn versioning issue

@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.1.2
+Version: 2.2
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -30,7 +30,25 @@ load_plugin_textdomain('widget-contexts', false, dirname(plugin_basename(__FILE_
  **/
 
 class widget_contexts {
-	/**
+    /**
+     * widget_contexts()
+     */
+    function widget_contexts() {
+        add_action('admin_print_scripts-widgets.php', array($this, 'admin_print_scripts'));
+        add_action('admin_print_styles-widgets.php', array($this, 'admin_print_styles'));
+
+        add_action('save_post', array($this, 'save_entry'));
+        add_filter('body_class', array($this, 'body_class'));
+
+        add_filter('widget_display_callback', array($this, 'display'), 0, 3);
+        add_filter('widget_update_callback', array($this, 'update'), 30, 4);
+        add_action('in_widget_form', array($this, 'form'), 30, 3);
+
+        if ( get_option('widget_contexts_version') === false && !defined('DOING_CRON') )
+        	add_action('init', array($this, 'upgrade'));
+    }
+
+    /**
 	 * admin_print_scripts()
 	 *
 	 * @return void
@@ -52,7 +70,7 @@ class widget_contexts {
 		$folder = plugin_dir_url(__FILE__) . 'css';
 		wp_enqueue_style('widget-contexts', $folder . '/admin.css', null, '20090903');
 		
-		add_filter('admin_body_class', array('widget_contexts', 'admin_body_class'));
+		add_filter('admin_body_class', array($this, 'admin_body_class'));
 		
 		global $wp_registered_widget_controls;
 		foreach ( array_keys($wp_registered_widget_controls) as $widget_id ) {
@@ -66,7 +84,7 @@ class widget_contexts {
 			$wp_registered_widget_controls[$widget_id]['callback'][0]->control_options['width'] = 460;
 		}
 		
-		add_action('admin_footer', array('widget_contexts', 'picker'));
+		add_action('admin_footer', array($this, 'picker'));
 	} # admin_print_styles()
 	
 	
@@ -190,7 +208,7 @@ class widget_contexts {
 	 * @return array $classes
 	 **/
 
-	function body_class($classes) {
+	static function body_class($classes) {
 		if ( !is_page() )
 			return $classes;
 		
@@ -821,16 +839,5 @@ class widget_contexts {
 	} # upgrade()
 } # widget_contexts
 
-add_action('admin_print_scripts-widgets.php', array('widget_contexts', 'admin_print_scripts'));
-add_action('admin_print_styles-widgets.php', array('widget_contexts', 'admin_print_styles'));
-
-add_action('save_post', array('widget_contexts', 'save_entry'));
-add_filter('body_class', array('widget_contexts', 'body_class'));
-
-add_filter('widget_display_callback', array('widget_contexts', 'display'), 0, 3);
-add_filter('widget_update_callback', array('widget_contexts', 'update'), 30, 4);
-add_action('in_widget_form', array('widget_contexts', 'form'), 30, 3);
-
-if ( get_option('widget_contexts_version') === false && !defined('DOING_CRON') )
-	add_action('init', array('widget_contexts', 'upgrade'));
+$widget_contexts = new widget_contexts();
 ?>
