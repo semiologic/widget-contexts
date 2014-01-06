@@ -8,13 +8,17 @@
 	margin-right: 5px;
 }
 
+.widget_contexts_float h3 {
+	font-size: 1.1em;
+}
+
 .widget_contexts-no_entry_specials #the_entry .widget_contexts_float {
 	width: 49%;
 }
 
 .widget_contexts ul {
 	margin-top: 9px;
-	margin-bottom: 0px;
+	margin-bottom: 0;
 }
 
 .widget_contexts li {

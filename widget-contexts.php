@@ -3,20 +3,19 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.2
+Version: 2.3
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
 Domain Path: /lang
+License: Dual licensed under the MIT and GPLv2 licenses
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
-
-http://www.mesoconcepts.com/license/
+This software is copyright Denis de Bernardy & Mike Koepke, and is distributed under the terms of the MIT and GPLv2 licenses.
 **/
 
 
@@ -33,9 +32,9 @@ class widget_contexts {
     /**
      * widget_contexts()
      */
-    function widget_contexts() {
-        add_action('admin_print_scripts-widgets.php', array($this, 'admin_print_scripts'));
-        add_action('admin_print_styles-widgets.php', array($this, 'admin_print_styles'));
+	public function __construct() {
+        add_action('admin_enqueue_scripts', array($this, 'admin_print_scripts'));
+        add_action('admin_enqueue_scripts', array($this, 'admin_print_styles'));
 
         add_action('save_post', array($this, 'save_entry'));
         add_filter('body_class', array($this, 'body_class'));
@@ -68,7 +67,7 @@ class widget_contexts {
 
 	function admin_print_styles() {
 		$folder = plugin_dir_url(__FILE__) . 'css';
-		wp_enqueue_style('widget-contexts', $folder . '/admin.css', null, '20090903');
+		wp_enqueue_style('widget-contexts', $folder . '/admin.css', null, '20140105');
 		
 		add_filter('admin_body_class', array($this, 'admin_body_class'));
 		
@@ -119,15 +118,21 @@ class widget_contexts {
 	 **/
 
 	function save_entry($post_id) {
-		if ( !get_transient('cached_section_ids') )
+		if ( !get_transient('cached_section_ids') || wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id) )
 			return;
 		
 		$post_id = (int) $post_id;
 		$post = get_post($post_id);
 		
-		if ( $post->post_type != 'page' )
+		if ( $post->post_type != 'page' || $post->post_status != 'publish' || $post->post_status != 'trash' )
 			return;
-		
+
+
+		if ( $post->post_status == 'trash' ) {
+			delete_transient('cached_section_ids');
+			return;
+		}
+
 		$section_id = get_post_meta($post_id, '_section_id', true);
 		$refresh = false;
 		if ( !$section_id ) {
@@ -141,7 +146,7 @@ class widget_contexts {
 				$refresh = true;
 			}
 		}
-		
+
 		if ( $refresh ) {
 			global $wpdb;
 			if ( !$post->post_parent )
@@ -154,10 +159,12 @@ class widget_contexts {
 				wp_cache_delete($post_id, 'posts');
 				
 				# mass-process children
-				if ( $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_parent = $post_id AND post_type = 'page' LIMIT 1") )
+				if ( $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_parent = $post_id AND post_type = 'page' LIMIT 1") )
 					delete_transient('cached_section_ids');
 			} else {
 				# fix corrupt data
+				if ( $section_id )
+					delete_post_meta($post_id, '_section_id');
 				delete_transient('cached_section_ids');
 			}
 		}
@@ -353,13 +360,13 @@ class widget_contexts {
 	/**
 	 * form()
 	 *
-	 * @param object &$widget WP_Widget
-     * @param object &$return
+	 * @param object $widget WP_Widget
+     * @param object $return
 	 * @param array $instance
 	 * @return void
 	 **/
 
-	function form(&$widget, &$return, $instance) {
+	function form($widget, $return, $instance) {
 		$all_contexts = widget_contexts::get_contexts();
 		
 		$contexts = isset($instance['widget_contexts']) && is_array($instance['widget_contexts'])
@@ -367,6 +374,10 @@ class widget_contexts {
 			: array();
 		
 		$base = array('page' => true);
+
+		$auto_new_section = true;
+		if ( isset( $contexts['page'] ) )
+			$auto_new_section = $contexts['page'];
 		
 		if ( method_exists($widget, 'defaults') ) {
 			$defaults = $widget->defaults();
@@ -386,7 +397,7 @@ class widget_contexts {
 		
 		foreach ( array_keys($all_contexts['sections']) as $context ) {
 			if ( !isset($defaults[$context]) )
-				$defaults[$context] = $defaults['page'];
+				$defaults[$context] = $auto_new_section;
 		}
 		
 		foreach ( array_keys($all_contexts['templates']) as $context ) {
@@ -493,13 +504,13 @@ class widget_contexts {
 		
 		echo '<div>' . "\n";
 			
-		echo '<h4>'
+		echo '<h3>'
 			. '<label>'
 			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
 			. __('Page Sections', 'widget-contexts')
 			. '</label>'
-			. '</h4>' . "\n";
+			. '</h3>' . "\n";
 		
 		echo '<ul>' . "\n";
 		
@@ -540,13 +551,13 @@ class widget_contexts {
 		
 		echo '<div class="widget_contexts-templates">' . "\n";
 		
-		echo '<h4>'
+		echo '<h3>'
 			. '<label>'
 			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
 			. __('Page Templates', 'widget-contexts')
 			. '</label>'
-			. '</h4>' . "\n";
+			. '</h3>' . "\n";
 		
 		echo '<ul>' . "\n";
 		
@@ -575,13 +586,13 @@ class widget_contexts {
 			. '<div class="widget_contexts-special">' . "\n";
 		
 		
-		echo '<h4>'
+		echo '<h3>'
 			. '<label>'
 			. '<input type="checkbox" onchange="return widgetContexts.toggle(this);" />'
 			. '&nbsp;'
 			. __('Special Contexts', 'widget-contexts')
 			. '</label>'
-			. '</h4>' . "\n";
+			. '</h3>' . "\n";
 		
 		echo '<ul>' . "\n";
 		
@@ -840,4 +851,3 @@ class widget_contexts {
 } # widget_contexts
 
 $widget_contexts = new widget_contexts();
-?>

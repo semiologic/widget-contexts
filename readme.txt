@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic, widgets
 Requires at least: 3.1
-Tested up to: 3.6
+Tested up to: 3.8
 Stable tag: trunk
 
 Allows to turn widgets on and off based on the context.
@@ -23,10 +23,17 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 == Installation ==
 
 1. Upload the plugin folder to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
+2. Activate the plugin through the 'Plugins' menu in WordPress
 
 
 == Change Log ==
+
+= 2.3 =
+
+- Fix issue where widgets were assigned to new pages even if the New Sections setting was off.
+- Improved context caching to work better with page revisions and auto-saves.
+- Fixed font in Customize Headings due to WP 3.8 admin changes
+- WP 3.8 compat
 
 = 2.2 =
 
