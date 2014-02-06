@@ -28,6 +28,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 2.3.1 =
+
+- Further tweaks around the widget context caching
+
 = 2.3 =
 
 - Fix issue where widgets were assigned to new pages even if the New Sections setting was off.
