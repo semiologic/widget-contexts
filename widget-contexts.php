@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.3.1
+Version: 2.4 dev
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -19,9 +19,6 @@ This software is copyright Denis de Bernardy & Mike Koepke, and is distributed u
 **/
 
 
-load_plugin_textdomain('widget-contexts', false, dirname(plugin_basename(__FILE__)) . '/lang');
-
-
 /**
  * widget_contexts
  *
@@ -29,23 +26,100 @@ load_plugin_textdomain('widget-contexts', false, dirname(plugin_basename(__FILE_
  **/
 
 class widget_contexts {
-    /**
-     * widget_contexts()
-     */
+	/**
+	 * Plugin instance.
+	 *
+	 * @see get_instance()
+	 * @type object
+	 */
+	protected static $instance = NULL;
+
+	/**
+	 * URL to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_url = '';
+
+	/**
+	 * Path to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_path = '';
+
+	/**
+	 * Access this plugin’s working instance
+	 *
+	 * @wp-hook plugins_loaded
+	 * @return  object of this class
+	 */
+	public static function get_instance()
+	{
+		NULL === self::$instance and self::$instance = new self;
+
+		return self::$instance;
+	}
+
+
+	/**
+	 * Loads translation file.
+	 *
+	 * Accessible to other classes to load different language files (admin and
+	 * front-end for example).
+	 *
+	 * @wp-hook init
+	 * @param   string $domain
+	 * @return  void
+	 */
+	public function load_language( $domain )
+	{
+		load_plugin_textdomain(
+			$domain,
+			FALSE,
+			$this->plugin_path . 'lang'
+		);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 *
+	 */
+
 	public function __construct() {
-        add_action('admin_enqueue_scripts', array($this, 'admin_print_scripts'));
-        add_action('admin_enqueue_scripts', array($this, 'admin_print_styles'));
+		$this->plugin_url    = plugins_url( '/', __FILE__ );
+		$this->plugin_path   = plugin_dir_path( __FILE__ );
+		$this->load_language( 'widget-contexts' );
 
-        add_action('save_post', array($this, 'save_entry'));
-        add_filter('body_class', array($this, 'body_class'));
-
-        add_filter('widget_display_callback', array($this, 'display'), 0, 3);
-        add_filter('widget_update_callback', array($this, 'update'), 30, 4);
-        add_action('in_widget_form', array($this, 'form'), 30, 3);
-
-        if ( get_option('widget_contexts_version') === false && !defined('DOING_CRON') )
-        	add_action('init', array($this, 'upgrade'));
+		add_action( 'plugins_loaded', array ( $this, 'init' ) );
     }
+
+
+	/**
+	 * init()
+	 *
+	 * @return void
+	 **/
+
+	function init() {
+		// more stuff: register actions and filters
+		if ( is_admin() ) {
+			add_action('admin_enqueue_scripts', array($this, 'admin_print_scripts'));
+			add_action('admin_enqueue_scripts', array($this, 'admin_print_styles'));
+
+			add_action('save_post', array($this, 'save_entry'));
+		}
+
+		add_filter('body_class', array($this, 'body_class'));
+
+		add_filter('widget_display_callback', array($this, 'display'), 0, 3);
+		add_filter('widget_update_callback', array($this, 'update'), 30, 4);
+		add_action('in_widget_form', array($this, 'form'), 30, 3);
+
+		if ( get_option('widget_contexts_version') === false && !defined('DOING_CRON') )
+			add_action('init', array($this, 'upgrade'));
+	}
 
     /**
 	 * admin_print_scripts()
@@ -354,7 +428,10 @@ class widget_contexts {
 					unset($instance['widget_contexts']['search']);
 			}
 		}
-		
+
+		// since contexts may have been altered purge any cached sections ids so they are rebuilt
+		delete_transient('cached_section_ids');
+
 		return $instance;
 	} # update()
 	
@@ -852,4 +929,4 @@ class widget_contexts {
 	} # upgrade()
 } # widget_contexts
 
-$widget_contexts = new widget_contexts();
+$widget_contexts = widget_contexts::get_instance();
