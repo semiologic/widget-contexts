@@ -8,6 +8,10 @@
 	margin-right: 5px;
 }
 
+.wp-customizer .widget_contexts_float {
+	width: 31%;
+}
+
 .widget_contexts_float h3 {
 	font-size: 1.1em;
 }

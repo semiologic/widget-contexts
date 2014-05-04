@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic, widgets
 Requires at least: 3.1
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: trunk
 
 Allows to turn widgets on and off based on the context.
@@ -30,8 +30,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 = 2.4 =
 
+- Compatible with WP 3.9 widget customizer
 - Changes to Page Sections not always flushing widget context caching.
 - Code refactoring
+- WP 3.9 compat
 
 = 2.3.1 =
 

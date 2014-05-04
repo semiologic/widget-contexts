@@ -3,7 +3,7 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.4 dev
+Version: 2.4
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: widget-contexts
@@ -77,7 +77,7 @@ class widget_contexts {
 		load_plugin_textdomain(
 			$domain,
 			FALSE,
-			$this->plugin_path . 'lang'
+			dirname(plugin_basename(__FILE__)) . '/lang'
 		);
 	}
 
@@ -109,6 +109,8 @@ class widget_contexts {
 			add_action('admin_enqueue_scripts', array($this, 'admin_print_styles'));
 
 			add_action('save_post', array($this, 'save_entry'));
+
+			add_filter( 'is_wide_widget_in_customizer', array($this, 'is_wide_widget'), 10, 2 );
 		}
 
 		add_filter('body_class', array($this, 'body_class'));
@@ -157,7 +159,8 @@ class widget_contexts {
 			$wp_registered_widget_controls[$widget_id]['callback'][0]->control_options['width'] = 460;
 		}
 		
-		add_action('admin_footer', array($this, 'picker'));
+		add_action('admin_print_footer_scripts', array($this, 'picker'));
+
 	} # admin_print_styles()
 	
 	
@@ -183,7 +186,19 @@ class widget_contexts {
 		return $classes;
 	} # admin_body_class()
 	
-	
+	/**
+	 * is_wide_widget()
+	 *
+	 * @param bool $is_wide
+	 * @param string $widget_id
+	 * @return bool
+	 **/
+
+	function is_wide_widget( $is_wide, $widget_id ) {
+		// force all widgets to wide in customizer to support contexts check boxes
+		return true;
+	} # is_wide_widget()
+
 	/**
 	 * save_entry()
 	 *
@@ -566,6 +581,7 @@ class widget_contexts {
 				. '<input type="checkbox"'
 					. ' name="' . $basename . '[' . $context . ']"'
 					. checked(!isset($contexts[$context]) || $contexts[$context], true, false)
+					. ' onchange="widgetContexts.markChanged(this);"'
 					. ' />'
 				. '&nbsp;'
 				. $label
@@ -599,6 +615,7 @@ class widget_contexts {
 				. '<input type="checkbox"'
 					. ' name="' . $basename . '[' . $context . ']"'
 					. checked(!isset($contexts[$context]) || $contexts[$context], true, false)
+					. ' onchange="widgetContexts.markChanged(this);"'
 					. ' />'
 				. '&nbsp;'
 				. $label
@@ -651,6 +668,7 @@ class widget_contexts {
 				. '<input type="checkbox"'
 					. ' name="' . $basename . '[' . $context . ']"'
 					. checked(!isset($contexts[$context]) || $contexts[$context], true, false)
+					. ' onchange="widgetContexts.markChanged(this);"'
 					. ' />'
 				. '&nbsp;'
 				. $label
@@ -686,6 +704,7 @@ class widget_contexts {
 				. '<input type="checkbox"'
 					. ' name="' . $basename . '[' . $context . ']"'
 					. checked(!isset($contexts[$context]) || $contexts[$context], true, false)
+					. ' onchange="widgetContexts.markChanged(this);"'
 					. ' />'
 				. '&nbsp;'
 				. $label

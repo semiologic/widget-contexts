@@ -3,6 +3,15 @@ var widgetContexts = {
 	toggle : function(elt) {
 		var is_checked = jQuery(elt).prop('checked');
 		jQuery(elt).closest('div').find(':checkbox').attr('checked', is_checked);
+
+		var widgetId = jQuery('.widget-id');
+		widgetId.change();
+	},
+
+	markChanged : function(elt) {
+		var widget = jQuery('.customize-control.expanded');
+		var control = widget.find('.widget-content').find('input').first();
+		control.change();
 	}
 };
 
@@ -31,4 +40,8 @@ jQuery(document).ready(function($) {
 		
 		return false;
 	});
+
+	var mw = $('.widget-content').css('maxWidth');
+	if ( parseInt(mw) <= '350')
+		$( '.widget-content').css('maxWidth', '350px');
 });
