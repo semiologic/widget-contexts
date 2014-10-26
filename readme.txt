@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic, widgets
 Requires at least: 3.1
-Tested up to: 3.9
+Tested up to: 4.0
 Stable tag: trunk
 
 Allows to turn widgets on and off based on the context.
@@ -27,6 +27,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 2.5 =
+
+- WP 4.0 compat
 
 = 2.4 =
 
