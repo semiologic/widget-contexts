@@ -3,9 +3,9 @@
 Plugin Name: Widget Contexts
 Plugin URI: http://www.semiologic.com/software/widget-contexts/
 Description: Lets you manage whether widgets should display or not based on the context.
-Version: 2.5
+Version: 2.6
 Author: Denis de Bernardy & Mike Koepke
-Author URI: http://www.getsemiologic.com
+Author URI: https://www.semiologic.com
 Text Domain: widget-contexts
 Domain Path: /lang
 License: Dual licensed under the MIT and GPLv2 licenses
@@ -268,7 +268,7 @@ class widget_contexts {
 	 * @return void
 	 **/
 
-	function cache_section_ids() {
+	static function cache_section_ids() {
 		global $wpdb;
 		
 		$pages = $wpdb->get_results("
@@ -553,7 +553,7 @@ class widget_contexts {
 	 * @return void
 	 **/
 
-	function picker($contexts = array(), $basename = '') {
+	static function picker($contexts = array(), $basename = '') {
 		$extra = '';
 		$all_contexts = widget_contexts::get_contexts();
 		
@@ -729,7 +729,7 @@ class widget_contexts {
 	 * @return array $contexts
 	 **/
 
-	function get_context() {
+	static function get_context() {
 		static $contexts;
 		
 		if ( isset($contexts) )
@@ -791,7 +791,7 @@ class widget_contexts {
 	 * @return array $contexts
 	 **/
 
-	function get_contexts() {
+	static function get_contexts() {
 		static $contexts;
 		
 		if ( isset($contexts) )

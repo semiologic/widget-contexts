@@ -1,9 +1,9 @@
 === Widget Contexts ===
 Contributors: Denis-de-Bernardy, Mike_Koepke
-Donate link: http://www.semiologic.com/partners/
+Donate link: https://www.semiologic.com/donate/
 Tags: semiologic, widgets
 Requires at least: 3.1
-Tested up to: 4.0
+Tested up to: 4.3
 Stable tag: trunk
 
 Allows to turn widgets on and off based on the context.
@@ -17,7 +17,7 @@ The Widget Contexts plugin for WordPress will let you turn widgets on and off ba
 
 = Help Me! =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues.
+The [Semiologic Support Page](https://www.semiologic.com/support/) is the best place to report issues.
 
 
 == Installation ==
@@ -27,6 +27,12 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 2.6 =
+
+- Fix a bunch of missed static/non-static php calling warnings that got missed
+- WP 4.3 compat
+- Tested against PHP 5.6
 
 = 2.5 =
 
